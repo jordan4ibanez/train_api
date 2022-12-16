@@ -1,7 +1,14 @@
 
+local Direction = {
+    NONE  = 0,
+    LEFT  = 1,
+    RIGHT = 2,
+    BACK  = 3,
+    FRONT = 4
+}
 
 local debugEntity = {
-    
+    direction = Direction.NONE
 }
 
 
