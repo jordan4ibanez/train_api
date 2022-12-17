@@ -51,6 +51,9 @@ function debugEntity:on_step(dtime)
         local newPos = vector.round(object:get_pos())
         
         object:set_pos(newPos)
+
+        object:set_acceleration(vector.new(0,0,0))
+        object:set_velocity(vector.new(0,0,0))
     end
 end
 
