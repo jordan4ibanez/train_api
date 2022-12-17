@@ -11,10 +11,10 @@ local debugEntity = {}
 debugEntity.initial_properties = {
     physical = true,
     collide_with_objects = false,
-    collisionbox = {-0.3, -0.3, -0.3, 0.3, 0.3, 0.3},
+    collisionbox = {-0.3, -0.25, -0.3, 0.3, 0.3, 0.3},
     visual = "mesh",
     mesh = "debug_train.b3d",
-    visual_size = {x = 0.4, y = 0.4},
+    visual_size = {x = 0.65, y = 0.65},
     textures = {"debug_train.png"},
     initial_sprite_basepos = {x = 0, y = 0}
 }
@@ -42,9 +42,16 @@ function debugEntity:on_step(dtime)
 
     local name = minetest.get_node(object:get_pos()).name
 
+    local wasOnRail = self.onRail
+
     self.onRail = minetest.get_item_group(name, "rail") > 0
 
-    print(name)
+    if not wasOnRail and self.onRail then
+
+        local newPos = vector.round(object:get_pos())
+        
+        object:set_pos(newPos)
+    end
 end
 
 minetest.register_entity("train_api:debug", debugEntity)
