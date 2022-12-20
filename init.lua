@@ -1,4 +1,5 @@
 
+-- Direction enum
 local Direction = {
     NONE  = 0,
     LEFT  = 1,
@@ -7,6 +8,12 @@ local Direction = {
     FRONT = 4
 }
 
+local function adjustY(inputVec, yAdjust)
+    inputVec.y = inputVec.y + yAdjust
+    return inputVec
+end
+
+-- Debug Entity class
 local debugEntity = {}
 debugEntity.initial_properties = {
     physical = true,
@@ -19,8 +26,10 @@ debugEntity.initial_properties = {
     initial_sprite_basepos = {x = 0, y = 0}
 }
 
-debugEntity.direction = Direction.NONE
-debugEntity.onRail    = false
+debugEntity.direction  = Direction.NONE
+debugEntity.onRail     = false
+debugEntity.flatOffset = 0.3
+
 
 -- Pass the pointer because I'm lazy
 local object
@@ -42,6 +51,7 @@ function debugEntity:on_step(dtime)
 
     local name = minetest.get_node(object:get_pos()).name
 
+
     local wasOnRail = self.onRail
 
     self.onRail = minetest.get_item_group(name, "rail") > 0
@@ -53,7 +63,14 @@ function debugEntity:on_step(dtime)
         object:set_pos(newPos)
 
         object:set_acceleration(vector.new(0,0,0))
+
         object:set_velocity(vector.new(0,0,0))
+    end
+
+    if self.onRail and self.direction == Direction.NONE then
+
+        print("Poll this crap")
+
     end
 end
 
