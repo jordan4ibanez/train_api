@@ -7,11 +7,35 @@ local Direction = {
     BACK  = 3,
     FRONT = 4
 }
+local LinearDirection = {
+    Direction.LEFT,
+    Direction.RIGHT,
+    Direction.BACK,
+    Direction.FRONT
+}
 
 local function adjustY(inputVec, yAdjust)
     inputVec.y = inputVec.y + yAdjust
     return inputVec
 end
+
+local Sniffs = {          -- Direction enum translation
+    vector.new(-1, 0, 0), -- LEFT
+    vector.new( 1, 0, 0), -- RIGHT
+    vector.new( 0, 0,-1), -- BACK
+    vector.new( 0, 0, 1)  -- FRONT
+}
+local function isRail(position)
+    return minetest.get_item_group(minetest.get_node(position).name, "rail") > 0
+end
+local function sniffDirection(position)
+    for index, modifier in ipairs(Sniffs) do
+        if isRail(vector.add(position, modifier)) then
+             return LinearDirection[index]
+        end
+    end
+end
+
 
 -- Debug Entity class
 local debugEntity = {}
@@ -43,8 +67,11 @@ function debugEntity:on_activate(staticdata, dtime_s)
     object:set_armor_groups({immortal = 1})
 
     if not self.onRail then
+
         print("I am not on a rail")
+
         object:set_acceleration(vector.new(0,-9.81,0))
+
     end
 
 end
@@ -75,8 +102,9 @@ function debugEntity:on_step(dtime)
     -- The train successfully plopped itself into a rail, now poll for a free direction
     if self.onRail and self.direction == Direction.NONE then
 
-        print("Poll this crap")
+        local debugTest = sniffDirection(object:get_pos())
 
+        print(dump(debugTest))
     end
 end
 
