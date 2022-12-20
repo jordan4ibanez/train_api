@@ -29,7 +29,7 @@ initProps.initial_sprite_basepos = {x = 0, y = 0}
 
 debugEntity.direction   = Direction.NONE
 debugEntity.onRail      = false
-debugEntity.flatOffset  = 0.3
+debugEntity.flatOffset  = -0.25
 debugEntity.progress    = 0
 debugEntity.currentTile = vector.new()
 
@@ -59,17 +59,20 @@ function debugEntity:on_step(dtime)
 
     self.onRail = minetest.get_item_group(name, "rail") > 0
 
+    -- Sniff for that rail
+
     if not wasOnRail and self.onRail then
 
         local newPos = vector.round(object:get_pos())
         
-        object:set_pos(newPos)
+        object:set_pos(adjustY(newPos, self.flatOffset))
 
         object:set_acceleration(vector.new(0,0,0))
 
         object:set_velocity(vector.new(0,0,0))
     end
 
+    -- The train successfully plopped itself into a rail, now poll for a free direction
     if self.onRail and self.direction == Direction.NONE then
 
         print("Poll this crap")
