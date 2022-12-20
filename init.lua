@@ -1,3 +1,4 @@
+-- Think of the train as a dog with a blindfold on and it's sniffing it's way through the map
 
 -- Direction enum
 local Direction = {
