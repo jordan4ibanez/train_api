@@ -15,20 +15,23 @@ end
 
 -- Debug Entity class
 local debugEntity = {}
-debugEntity.initial_properties = {
-    physical = true,
-    collide_with_objects = false,
-    collisionbox = {-0.3, -0.25, -0.3, 0.3, 0.3, 0.3},
-    visual = "mesh",
-    mesh = "debug_train.b3d",
-    visual_size = {x = 0.65, y = 0.65},
-    textures = {"debug_train.png"},
-    initial_sprite_basepos = {x = 0, y = 0}
-}
+debugEntity.initial_properties = {}
+local initProps = debugEntity.initial_properties
 
-debugEntity.direction  = Direction.NONE
-debugEntity.onRail     = false
-debugEntity.flatOffset = 0.3
+initProps.physical = true
+initProps.collide_with_objects = false
+initProps.collisionbox = {-0.3, -0.25, -0.3, 0.3, 0.3, 0.3}
+initProps.visual = "mesh"
+initProps.mesh = "debug_train.b3d"
+initProps.visual_size = {x = 0.65, y = 0.65}
+initProps.textures = {"debug_train.png"}
+initProps.initial_sprite_basepos = {x = 0, y = 0}
+
+debugEntity.direction   = Direction.NONE
+debugEntity.onRail      = false
+debugEntity.flatOffset  = 0.3
+debugEntity.progress    = 0
+debugEntity.currentTile = vector.new()
 
 
 -- Pass the pointer because I'm lazy
