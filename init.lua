@@ -14,6 +14,9 @@ local LinearDirection = {
     Direction.BACK,
     Direction.FRONT
 }
+local directionTranslation = {
+    "NONE", "LEFT", "RIGHT", "BACK", "FRONT"
+}
 
 local function adjustY(inputVec, yAdjust)
     inputVec.y = inputVec.y + yAdjust
@@ -57,6 +60,7 @@ debugEntity.onRail      = false
 debugEntity.flatOffset  = -0.25
 debugEntity.progress    = 0
 debugEntity.currentTile = vector.new()
+debugEntity.rotationAdjustment = 1 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
 
 -- Rail memory will be added into later on
 -- Rail memory is an optimization that allows for the train to use it's previous calculations to automatically move rail cars over it's previous positions
@@ -107,9 +111,9 @@ function debugEntity:on_step(dtime)
     -- The train successfully plopped itself into a rail, now poll for a free direction
     if self.onRail and self.direction == Direction.NONE then
 
-        local debugTest = sniffDirection(object:get_pos())
+        local newDir = sniffDirection(object:get_pos())
 
-        print(dump(debugTest))
+        print(directionTranslation[newDir])
     end
 end
 
