@@ -58,6 +58,10 @@ debugEntity.flatOffset  = -0.25
 debugEntity.progress    = 0
 debugEntity.currentTile = vector.new()
 
+-- Rail memory will be added into later on
+-- Rail memory is an optimization that allows for the train to use it's previous calculations to automatically move rail cars over it's previous positions
+debugEntity.railMemory = {}
+
 
 -- Pass the pointer because I'm lazy
 local object
