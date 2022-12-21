@@ -114,7 +114,19 @@ function debugEntity:on_step(dtime)
         local newDir = sniffDirection(object:get_pos())
 
         print(directionTranslation[newDir])
+
+        self.direction = LinearDirection[newDir]
     end
+
+    -- The train is still free floating in the environment, let it exist
+    if not (self.onRail or self.direction) then
+        print("I cannot do anything, I'm not on a rail")
+        return
+    end
+
+
+
+
 end
 
 minetest.register_entity("train_api:debug", debugEntity)
