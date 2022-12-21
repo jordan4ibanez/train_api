@@ -1,5 +1,6 @@
 -- Think of the train as a dog with a blindfold on and it's sniffing it's way through the map
 
+--! Important note: There will be absolutely NO optimizations to this at all until there is at least a functioning 10 car train
 
 -- I'm actually surprised these two functions are missing from both LuaJIT and Minetest
 function math.fma(x, y, z)
