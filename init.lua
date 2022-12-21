@@ -67,7 +67,7 @@ debugEntity.direction   = Direction.NONE
 debugEntity.onRail      = false
 debugEntity.flatOffset  = -0.25
 debugEntity.progress    = 0
-debugEntity.currentTile = vector.new()
+debugEntity.currentTile = nil
 debugEntity.headWayTile = nil
 debugEntity.rotationAdjustment = 1 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
 
@@ -99,17 +99,23 @@ function debugEntity:on_step(dtime)
 
     local wasOnRail = self.onRail
 
-    --! Change this to tile position
-    self.onRail = isRail(object:get_pos())
+    -- Train thinks it's on a tile
+    if self.currentTile then
+        self.onRail = isRail(self.currentTile)
+    -- Train was not on a tile, or did not successfully restore tile memory - latter would be an engine bug or host machine failure
+    else
+        self.onRail = isRail(vector.round(object:get_pos()))
+    end
 
     -- Train is about to fall of the rail
     if self.headWayTile then
-
         if not isRail(self.headWayTile) then
             self.direction = Direction.NONE
             self.headWayTile = nil
         end
     end
+
+    --* These two functions are for when a train has a state update
 
     -- Train fell off rail
     if wasOnRail and not self.onRail then
@@ -124,6 +130,7 @@ function debugEntity:on_step(dtime)
     elseif not wasOnRail and self.onRail then
 
         print("rail update")
+
         local newPos = vector.round(object:get_pos())
 
         self.currentTile = vector.copy(newPos)
