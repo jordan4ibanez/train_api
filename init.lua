@@ -24,11 +24,11 @@ local DirectionTranslation = {
     "RIGHT",
     "FRONT"
 }
-local DirectionLiteral = {          -- Direction enum translation
-    vector.new(-1, 0, 0), -- LEFT
-    vector.new( 0, 0,-1), -- BACK
-    vector.new( 1, 0, 0), -- RIGHT
-    vector.new( 0, 0, 1)  -- FRONT
+local DirectionLiteral = { -- Direction enum translation
+    vector.new(-1, 0, 0),  -- LEFT
+    vector.new( 0, 0,-1),  -- BACK
+    vector.new( 1, 0, 0),  -- RIGHT
+    vector.new( 0, 0, 1)   -- FRONT
 }
 
 local function adjustY(inputVec, yAdjust)
