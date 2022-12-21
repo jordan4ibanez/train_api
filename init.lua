@@ -45,6 +45,8 @@ local DirectionLiteral = { -- Direction enum translation
     vector.new( 0, 0, 1)   -- FRONT
 }
 
+--Todo: direction blocking translation, doesn't allow train back down the path it came from
+
 local function adjustY(inputVec, yAdjust)
     inputVec.y = inputVec.y + yAdjust
     return inputVec
@@ -92,7 +94,7 @@ debugEntity.progress    = 0
 
 -- Rail memory will be added into later on
 -- Rail memory is an optimization that allows for the train to use it's previous calculations to automatically move rail cars over it's previous positions
-debugEntity.railMemory = {}
+debugEntity.railMemory  = {}
 
 
 -- Reuse the pointer to ease the pressure on the garbage collector
@@ -200,6 +202,16 @@ function debugEntity:on_step(dtime)
     object:set_yaw(HALF_PI * (self.direction + self.rotationAdjustment))
 
     print("Yaw: " .. object:get_yaw())
+
+    if self.progress < 1 then
+        self.progress = self.progress + dtime
+        object:set_pos(adjustY(vector.lerp(self.currentTile, self.headWayTile, self.progress), self.flatOffset))
+    else
+        self.progress = 0
+        self.currentTile = self.headWayTile
+        self.headWayTile = nil
+        self.direction = Direction.NONE
+    end
 
 
 end
