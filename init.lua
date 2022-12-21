@@ -1,5 +1,8 @@
 -- Think of the train as a dog with a blindfold on and it's sniffing it's way through the map
 
+
+local HALF_PI = math.pi / 2
+
 -- Direction enum
 local Direction = {
     NONE  = 0,
@@ -14,8 +17,14 @@ local LinearDirection = {
     Direction.BACK,
     Direction.FRONT
 }
-local directionTranslation = {
+local DirectionTranslation = {
     "NONE", "LEFT", "RIGHT", "BACK", "FRONT"
+}
+local DirectionLiteral = {          -- Direction enum translation
+    vector.new(-1, 0, 0), -- LEFT
+    vector.new( 1, 0, 0), -- RIGHT
+    vector.new( 0, 0,-1), -- BACK
+    vector.new( 0, 0, 1)  -- FRONT
 }
 
 local function adjustY(inputVec, yAdjust)
@@ -23,17 +32,12 @@ local function adjustY(inputVec, yAdjust)
     return inputVec
 end
 
-local Sniffs = {          -- Direction enum translation
-    vector.new(-1, 0, 0), -- LEFT
-    vector.new( 1, 0, 0), -- RIGHT
-    vector.new( 0, 0,-1), -- BACK
-    vector.new( 0, 0, 1)  -- FRONT
-}
+
 local function isRail(position)
     return minetest.get_item_group(minetest.get_node(position).name, "rail") > 0
 end
 local function sniffDirection(position)
-    for index, modifier in ipairs(Sniffs) do
+    for index, modifier in ipairs(DirectionLiteral) do
         if isRail(vector.add(position, modifier)) then
              return LinearDirection[index]
         end
@@ -60,6 +64,7 @@ debugEntity.onRail      = false
 debugEntity.flatOffset  = -0.25
 debugEntity.progress    = 0
 debugEntity.currentTile = vector.new()
+debugEntity.headWayTile = nil
 debugEntity.rotationAdjustment = 1 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
 
 -- Rail memory will be added into later on
@@ -88,18 +93,36 @@ end
 function debugEntity:on_step(dtime)
     object = self.object
 
-    local name = minetest.get_node(object:get_pos()).name
-
-
     local wasOnRail = self.onRail
 
-    self.onRail = minetest.get_item_group(name, "rail") > 0
+    --! Change this to tile position
+    self.onRail = isRail(object:get_pos())
+
+    -- Train is about to fall of the rail
+    if self.headWayTile then
+
+        if not isRail(self.headWayTile) then
+            self.direction = Direction.NONE
+            self.headWayTile = nil
+        end
+    end
+
+    -- Train fell off rail
+    if wasOnRail and not self.onRail then
+
+        object:set_acceleration(vector.new(0,-9.81, 0))
+
+        self.direction = Direction.NONE
+
+        print("rail failure")
 
     -- Sniff for that rail
+    elseif not wasOnRail and self.onRail then
 
-    if not wasOnRail and self.onRail then
-
+        print("rail update")
         local newPos = vector.round(object:get_pos())
+
+        self.currentTile = vector.copy(newPos)
         
         object:set_pos(adjustY(newPos, self.flatOffset))
 
@@ -113,18 +136,26 @@ function debugEntity:on_step(dtime)
 
         local newDir = sniffDirection(object:get_pos())
 
-        print(directionTranslation[newDir])
+        print(DirectionTranslation[newDir])
 
         self.direction = LinearDirection[newDir]
+
+        print("My direction = " .. self.direction)
+
+        if self.direction ~= Direction.NONE then
+            self.headWayTile = vector.add(self.currentTile, DirectionLiteral[self.direction])
+        end
     end
 
     -- The train is still free floating in the environment, let it exist
-    if not (self.onRail or self.direction) then
+    if not self.onRail or self.direction == Direction.NONE then
         print("I cannot do anything, I'm not on a rail")
         return
     end
 
+    object:set_yaw(HALF_PI * self.direction)
 
+    print("Yaw: " .. object:get_yaw())
 
 
 end
