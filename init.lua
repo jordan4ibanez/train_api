@@ -63,20 +63,25 @@ initProps.visual_size = {x = 0.65, y = 0.65}
 initProps.textures = {"debug_train.png"}
 initProps.initial_sprite_basepos = {x = 0, y = 0}
 
+--* Visual elements
+debugEntity.flatOffset  = -0.25
+
+--* Path sniffing elements
 debugEntity.direction   = Direction.NONE
 debugEntity.onRail      = false
-debugEntity.flatOffset  = -0.25
-debugEntity.progress    = 0
 debugEntity.currentTile = nil
 debugEntity.headWayTile = nil
 debugEntity.rotationAdjustment = 1 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
+
+--* Interpolation elements
+debugEntity.progress    = 0
 
 -- Rail memory will be added into later on
 -- Rail memory is an optimization that allows for the train to use it's previous calculations to automatically move rail cars over it's previous positions
 debugEntity.railMemory = {}
 
 
--- Pass the pointer because I'm lazy
+-- Reuse the pointer to ease the pressure on the garbage collector
 local object
 
 function debugEntity:on_activate(staticdata, dtime_s)
