@@ -7,23 +7,27 @@ local HALF_PI = math.pi / 2
 local Direction = {
     NONE  = 0,
     LEFT  = 1,
-    RIGHT = 2,
-    BACK  = 3,
+    BACK  = 2,
+    RIGHT = 3,
     FRONT = 4
 }
 local LinearDirection = {
     Direction.LEFT,
-    Direction.RIGHT,
     Direction.BACK,
+    Direction.RIGHT,
     Direction.FRONT
 }
 local DirectionTranslation = {
-    "NONE", "LEFT", "RIGHT", "BACK", "FRONT"
+    "NONE",
+    "LEFT",
+    "BACK",
+    "RIGHT",
+    "FRONT"
 }
 local DirectionLiteral = {          -- Direction enum translation
     vector.new(-1, 0, 0), -- LEFT
-    vector.new( 1, 0, 0), -- RIGHT
     vector.new( 0, 0,-1), -- BACK
+    vector.new( 1, 0, 0), -- RIGHT
     vector.new( 0, 0, 1)  -- FRONT
 }
 
