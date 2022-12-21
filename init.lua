@@ -203,6 +203,9 @@ function debugEntity:on_step(dtime)
 
     print("Yaw: " .. object:get_yaw())
 
+
+    -- If the train is in reverse, the back car becomes the engine, AND the currentTile and headWayTile are swapped for the memory cell
+
     if self.progress < 1 then
         self.progress = self.progress + dtime
         object:set_pos(adjustY(vector.lerp(self.currentTile, self.headWayTile, self.progress), self.flatOffset))
