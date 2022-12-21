@@ -85,7 +85,7 @@ debugEntity.direction   = Direction.NONE
 debugEntity.onRail      = false
 debugEntity.currentTile = nil
 debugEntity.headWayTile = nil
-debugEntity.rotationAdjustment = 1 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
+debugEntity.rotationAdjustment = 0 -- Multiplies math.pi so 2 would be 180 degrees, 3 270, etc
 
 --* Interpolation elements
 debugEntity.progress    = 0
@@ -178,12 +178,26 @@ function debugEntity:on_step(dtime)
     end
 
     -- The train is still free floating in the environment, let it exist
+    --[[
     if not self.onRail or self.direction == Direction.NONE then
         print("I cannot do anything, I'm not on a rail")
         return
     end
+    ]]
 
-    object:set_yaw(HALF_PI * self.direction)
+    if not self.onRail then
+        print("I am not on a rail, I will not continue")
+        return
+    end
+    
+    if self.direction == Direction.NONE then
+        -- Doesn't matter what this direction is, if it's on a solo rail, they always face this way. Just make the train look like it's on it
+        object:set_yaw(HALF_PI * (Direction.FRONT + self.rotationAdjustment))
+        print("I have no where to go, I will not continue")
+        return
+    end
+
+    object:set_yaw(HALF_PI * (self.direction + self.rotationAdjustment))
 
     print("Yaw: " .. object:get_yaw())
 
