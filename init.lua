@@ -117,7 +117,7 @@ function debugEntity:on_step(dtime)
 
     --* These two functions are for when a train has a state update
 
-    -- Train fell off rail
+    -- Train fell off rail OR rail was modified by external mod/player
     if wasOnRail and not self.onRail then
 
         object:set_acceleration(vector.new(0,-9.81, 0))
@@ -126,7 +126,7 @@ function debugEntity:on_step(dtime)
 
         print("rail failure")
 
-    -- Sniff for that rail
+    -- Check if current position is a rail
     elseif not wasOnRail and self.onRail then
 
         print("rail update")
@@ -142,7 +142,7 @@ function debugEntity:on_step(dtime)
         object:set_velocity(vector.new(0,0,0))
     end
 
-    -- The train successfully plopped itself into a rail, now poll for a free direction
+    -- The train successfully snapped itself into a rail, now poll for a free direction
     if self.onRail and self.direction == Direction.NONE then
 
         local newDir = sniffDirection(object:get_pos())
