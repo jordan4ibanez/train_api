@@ -1,6 +1,19 @@
 -- Think of the train as a dog with a blindfold on and it's sniffing it's way through the map
 
 
+-- I'm actually surprised these two functions are missing from both LuaJIT and Minetest
+function math.fma(x, y, z)
+    return (x * y) + z
+end
+--* Interpolation amount is a value in range of 0.0 to 1.0
+function vector.lerp(vectorOrigin, vectorDestination, interpolationAmount)
+    return vector.new(
+        math.fma(vectorDestination.x - vectorOrigin.x, interpolationAmount, vectorOrigin.x),
+        math.fma(vectorDestination.y - vectorOrigin.y, interpolationAmount, vectorOrigin.y),
+        math.fma(vectorDestination.z - vectorOrigin.z, interpolationAmount, vectorOrigin.z)
+    )
+end
+
 local HALF_PI = math.pi / 2
 
 -- Direction enum
