@@ -44,6 +44,12 @@ local DirectionLiteral = { -- Direction enum translation
     vector.new( 1, 0, 0),  -- RIGHT
     vector.new( 0, 0, 1)   -- FRONT
 }
+local DirectionBlock = { -- Blocks the train from turning back the way it came
+    [1] = 3,
+    [2] = 4,
+    [3] = 1,
+    [4] = 2
+}
 
 --Todo: direction blocking translation, doesn't allow train back down the path it came from
 
@@ -201,19 +207,19 @@ function debugEntity:on_step(dtime)
 
     object:set_yaw(HALF_PI * (self.direction + self.rotationAdjustment))
 
-    print("Yaw: " .. object:get_yaw())
+    --print("Yaw: " .. object:get_yaw())
 
 
     -- If the train is in reverse, the back car becomes the engine, AND the currentTile and headWayTile are swapped for the memory cell
 
-    if self.progress < 1 then
+    if self.progress < 1 and self.headWayTile and self.currentTile then
         self.progress = self.progress + dtime
         object:set_pos(adjustY(vector.lerp(self.currentTile, self.headWayTile, self.progress), self.flatOffset))
     else
         self.progress = 0
         self.currentTile = self.headWayTile
         self.headWayTile = nil
-        self.direction = Direction.NONE
+        -- self.direction = Direction.NONE
     end
 
 
